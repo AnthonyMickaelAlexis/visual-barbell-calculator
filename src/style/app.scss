@@ -262,7 +262,6 @@ h3 {
 }
 
 .equipment-group {
-  white-space: nowrap;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: min-content;
@@ -271,6 +270,9 @@ h3 {
   grid-gap: 5px;
   min-width: 100%;
   max-height: min-content;
+  h4 {
+    white-space: normal;
+  }
   input {
     text-align: center;
     background: $background-color;
@@ -314,7 +316,6 @@ h3 {
 }
 
 .plate-group {
-  white-space: nowrap;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-auto-rows: auto;
@@ -324,6 +325,9 @@ h3 {
   width: 100%;
   font-size: 1em;
   cursor: pointer;
+  h4 {
+    white-space: normal;
+  }
   select {
     background: $background-color;
     font-size: 0.8em;
