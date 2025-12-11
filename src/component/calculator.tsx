@@ -50,6 +50,77 @@ const Calculator: React.FC = () => {
     return plateCounts;
   }, [currentWeightUnit, calculateTotalEquipmentWeight, settingsState.plates])
 
+  // Calculate actual weight from plate counts
+  const calculateActualWeight = useCallback((plateCounts: plateCountType): number => {
+    let totalWeight = calculateTotalEquipmentWeight();
+    Object.keys(plateCounts).forEach(weight => {
+      totalWeight += parseFloat(weight) * parseInt(plateCounts[weight]) * 2;
+    });
+    return Math.round(totalWeight * 100) / 100;
+  }, [calculateTotalEquipmentWeight]);
+
+  // Find closest upper achievable weight
+  const findClosestUpperWeight = useCallback((
+    targetWeight: number,
+    currentPlateCounts: plateCountType,
+    plateWeights: string[],
+    unit: 'kg' | 'lb'
+  ): number | null => {
+    const currentWeight = calculateActualWeight(currentPlateCounts);
+
+    // If already at or above target, no upper weight needed
+    if (currentWeight >= targetWeight) {
+      return null;
+    }
+
+    // Sort plates from lightest to heaviest for upper search
+    const sortedPlates = plateWeights
+      .map(p => parseFloat(p))
+      .sort((a, b) => a - b);
+
+    let minUpperWeight: number | null = null;
+
+    // Try adding one pair of each available plate
+    for (const plateWeight of sortedPlates) {
+      const available = settingsState.plates[unit][plateWeight];
+      const used = parseInt(currentPlateCounts[plateWeight.toString()] || '0');
+
+      // Check if we can add one more pair
+      if (used < available) {
+        const upperWeight = currentWeight + (plateWeight * 2);
+
+        // If this gets us above target and is closer than previous candidates
+        if (upperWeight > targetWeight) {
+          if (minUpperWeight === null || upperWeight < minUpperWeight) {
+            minUpperWeight = upperWeight;
+          }
+        }
+      }
+    }
+
+    // If no single plate addition works, try adding smallest available plates progressively
+    if (minUpperWeight === null) {
+      let testWeight = currentWeight;
+      const testCounts = { ...currentPlateCounts };
+
+      for (const plateWeight of sortedPlates) {
+        const available = settingsState.plates[unit][plateWeight];
+        const used = parseInt(testCounts[plateWeight.toString()] || '0');
+
+        if (used < available) {
+          testWeight += plateWeight * 2;
+          if (testWeight > targetWeight) {
+            minUpperWeight = Math.round(testWeight * 100) / 100;
+            break;
+          }
+          testCounts[plateWeight.toString()] = (used + 1).toString();
+        }
+      }
+    }
+
+    return minUpperWeight ? Math.round(minUpperWeight * 100) / 100 : null;
+  }, [calculateActualWeight, settingsState.plates]);
+
   // Ensures string is a valid decimal
   const sanitizeDecimal = (input: string): string => input.replace(/[^0-9.]/g, '');
 
@@ -80,46 +151,85 @@ const Calculator: React.FC = () => {
       : lbInputColors
   ));
 
+  // State for tracking weight achievability
+  const [isUnachievable, setIsUnachievable] = useState(false);
+  const [closestLowerWeight, setClosestLowerWeight] = useState<number | null>(null);
+  const [closestUpperWeight, setClosestUpperWeight] = useState<number | null>(null);
+
   // Triggered when settings change
   useEffect(() => {
     let updatedPlateCount: plateCountType;
+    let plates: string[];
     const total = calculatorState.total;
+    const unit = currentWeightUnit === WeightUnit.KG ? 'kg' : 'lb';
+
     // Converts total and plate counts to appropriate unit.
     if (currentWeightUnit === WeightUnit.KG) {
       const kg = settingsState.plates.kg;
-      const plates = Object.keys(kg).filter(plate => kg[plate] > 0);
+      plates = Object.keys(kg).filter(plate => kg[plate] > 0);
       updatedPlateCount = countPlatesFromTotal(plates, total);
       setCurrentInputColors(kgInputColors);
     } else {
       const lb = settingsState.plates.lb;
-      const plates = Object.keys(lb).filter(plate => lb[plate] > 0);
+      plates = Object.keys(lb).filter(plate => lb[plate] > 0);
       updatedPlateCount = countPlatesFromTotal(plates, total);
       setCurrentInputColors(lbInputColors);
     }
+
+    // Check if weight is achievable
+    const actualWeight = calculateActualWeight(updatedPlateCount);
+    if (total === 0 || Math.abs(actualWeight - total) < 0.01) {
+      setIsUnachievable(false);
+      setClosestLowerWeight(null);
+      setClosestUpperWeight(null);
+    } else {
+      setIsUnachievable(true);
+      setClosestLowerWeight(actualWeight);
+      const upperWeight = findClosestUpperWeight(total, updatedPlateCount, plates, unit);
+      setClosestUpperWeight(upperWeight);
+    }
+
     setTotalDisplay(total === 0 ? '' : total.toString());
     setPlateDisplay(updatedPlateCount);
     setCalculatorState({ total: total, plateCounts: updatedPlateCount });
-  }, [calculatorState.total, countPlatesFromTotal, currentWeightUnit, kgInputColors, lbInputColors, setCalculatorState, settingsState]);
+  }, [calculatorState.total, countPlatesFromTotal, currentWeightUnit, kgInputColors, lbInputColors, setCalculatorState, settingsState, calculateActualWeight, findClosestUpperWeight]);
 
   // Triggered when convertedTotal changes
   useEffect(() => {
     let updatedPlateCount: plateCountType;
+    let plates: string[];
+    const unit = currentWeightUnit === WeightUnit.KG ? 'kg' : 'lb';
+
     // Converts total and plate counts to appropriate unit.
     if (currentWeightUnit === WeightUnit.KG) {
       const kg = settingsState.plates.kg;
-      const plates = Object.keys(kg).filter(plate => kg[plate] > 0);
+      plates = Object.keys(kg).filter(plate => kg[plate] > 0);
       updatedPlateCount = countPlatesFromTotal(plates, convertedTotal);
       setCurrentInputColors(kgInputColors);
     } else {
       const lb = settingsState.plates.lb;
-      const plates = Object.keys(lb).filter(plate => lb[plate] > 0);
+      plates = Object.keys(lb).filter(plate => lb[plate] > 0);
       updatedPlateCount = countPlatesFromTotal(plates, convertedTotal);
       setCurrentInputColors(lbInputColors);
     }
+
+    // Check if weight is achievable
+    const actualWeight = calculateActualWeight(updatedPlateCount);
+    if (convertedTotal === 0 || Math.abs(actualWeight - convertedTotal) < 0.01) {
+      setIsUnachievable(false);
+      setClosestLowerWeight(null);
+      setClosestUpperWeight(null);
+    } else {
+      setIsUnachievable(true);
+      setClosestLowerWeight(actualWeight);
+      const upperWeight = findClosestUpperWeight(convertedTotal, updatedPlateCount, plates, unit);
+      setClosestUpperWeight(upperWeight);
+    }
+
     setTotalDisplay(convertedTotal === 0 ? '' : convertedTotal.toString());
     setPlateDisplay(updatedPlateCount);
     setCalculatorState({ total: convertedTotal, plateCounts: updatedPlateCount });
-  }, [convertedTotal, countPlatesFromTotal, currentWeightUnit, kgInputColors, lbInputColors, setCalculatorState, settingsState.plates.kg, settingsState.plates.lb])
+  }, [convertedTotal, countPlatesFromTotal, currentWeightUnit, kgInputColors, lbInputColors, setCalculatorState, settingsState.plates.kg, settingsState.plates.lb, calculateActualWeight, findClosestUpperWeight])
 
   // Sets warnings
   useEffect(() => {
@@ -232,7 +342,22 @@ const Calculator: React.FC = () => {
           />
           <label htmlFor='total-input'><span className='total-unit'>{currentWeightUnit === WeightUnit.KG ? 'kg' : 'lb'}</span></label>
         </div>
-        <span className='plate-pairs-heading'>plates per side</span>
+        {isUnachievable ? (
+          <div className='unachievable-weight-warning'>
+            <span className='warning-text'>
+              Poids le plus proche:
+              {closestLowerWeight !== null && (
+                <> {closestLowerWeight} {currentWeightUnit === WeightUnit.KG ? 'kg' : 'lb'} (inférieur)</>
+              )}
+              {closestUpperWeight !== null && closestLowerWeight !== null && <> ou </>}
+              {closestUpperWeight !== null && (
+                <> {closestUpperWeight} {currentWeightUnit === WeightUnit.KG ? 'kg' : 'lb'} (supérieur)</>
+              )}
+            </span>
+          </div>
+        ) : (
+          <span className='plate-pairs-heading'>disques par côté</span>
+        )}
       </div>
       {
         Object.entries(plateDisplay).sort(([a,], [b,]) =>

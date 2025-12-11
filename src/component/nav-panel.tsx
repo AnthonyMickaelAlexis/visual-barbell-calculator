@@ -49,7 +49,7 @@ const NavPanel: React.FC = () => {
             type='radio'
             name='weightUnit'
             className='nav-unit-radio'
-            defaultChecked={true}
+            defaultChecked={false}
             value={WeightUnit.LB}
             onChange={handleWeightUnit}
           />
@@ -60,14 +60,14 @@ const NavPanel: React.FC = () => {
             type='radio'
             name='weightUnit'
             className='nav-unit-radio'
-            defaultChecked={false}
+            defaultChecked={true}
             value={WeightUnit.KG}
             onChange={handleWeightUnit}
           />
           kg
         </label>
       </form>
-      <button className='nav-button' onClick={handleSettingsButton}>equipment</button>
+      <button className='nav-button' onClick={handleSettingsButton}>équipement</button>
     </nav>
   )
 }

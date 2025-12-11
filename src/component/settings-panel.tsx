@@ -113,7 +113,7 @@ const SettingsPanel: React.FC<any> = () => {
     <div className='settings-panel'>
       <form>
         <div className='equipment-group'>
-          <h4>Barbell Weight</h4>
+          <h4>Poids de la barre</h4>
           <div className='equipment-weight-container'>
             <EquipmentSettingCard
               unit='kg'
@@ -134,7 +134,7 @@ const SettingsPanel: React.FC<any> = () => {
           </div>
         </div>
         <div className='equipment-group'>
-          <h4>1 Collar Weight</h4>
+          <h4>Poids d'un collier</h4>
           <div className='equipment-weight-container'>
             <EquipmentSettingCard
               unit='kg'
@@ -156,7 +156,7 @@ const SettingsPanel: React.FC<any> = () => {
         </div>
 
         <div className='plate-group'>
-          <h4>KG Plate Pairs</h4>
+          <h4>Paires de disques KG</h4>
           {
             kgPlateList.map(plate => (
               <PlateSettingCard
@@ -172,7 +172,7 @@ const SettingsPanel: React.FC<any> = () => {
           }
         </div>
         <div className='plate-group'>
-          <h4>LB Plate Pairs</h4>
+          <h4>Paires de disques LB</h4>
           {
             lbPlateList.map(plate => (
               <PlateSettingCard
@@ -190,7 +190,7 @@ const SettingsPanel: React.FC<any> = () => {
 
       </form >
       <div className='submit-group'>
-        <button onClick={handleDefault}>default</button>
+        <button onClick={handleDefault}>par défaut</button>
       </div>
     </div>
 

@@ -15,7 +15,7 @@ export enum Warning {
 export const defaultSettingsState = {
   equipment: {
     barbell: {
-      kg: 20.41,
+      kg: 20,
       lb: 45,
     },
     collar: {
@@ -27,11 +27,12 @@ export const defaultSettingsState = {
     kg: {
       '50': 0,
       '25': Infinity,
-      '15': Infinity,
-      '10': Infinity,
-      '5': Infinity,
-      '2.5': Infinity,
-      '1.25': Infinity,
+      '20': 2,
+      '15': 2,
+      '10': 2,
+      '5': 2,
+      '2.5': 0,
+      '1.25': 0,
       '0.5': 0,
       '0.25': 0,
     },
@@ -54,7 +55,7 @@ export const defaultSettingsState = {
 const initialSettingsState = {
   equipment: {
     barbell: {
-      kg: 20.41,
+      kg: 20,
       lb: 45,
     },
     collar: {
@@ -66,11 +67,12 @@ const initialSettingsState = {
     kg: {
       '50': 0,
       '25': Infinity,
-      '15': Infinity,
-      '10': Infinity,
-      '5': Infinity,
-      '2.5': Infinity,
-      '1.25': Infinity,
+      '20': 2,
+      '15': 2,
+      '10': 2,
+      '5': 2,
+      '2.5': 0,
+      '1.25': 0,
       '0.5': 0,
       '0.25': 0,
     },
@@ -109,7 +111,7 @@ export const SettingsContext = createContext<settingsStateType | any>(undefined)
 export const SettingsProvider = (props: any) => {
   const [settingsState, setSettingsState] = useState<settingsStateType | any>(initializeSettings());
   const [warning, setWarning] = useState<Warning>();
-  const [currentWeightUnit, setCurrentWeightUnit] = useState(WeightUnit.LB);
+  const [currentWeightUnit, setCurrentWeightUnit] = useState(WeightUnit.KG);
   return (
     <SettingsContext.Provider
       value={
