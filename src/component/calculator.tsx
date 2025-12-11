@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useContext, useState, useEffect } from 'react';
+import React, { ChangeEvent, useContext, useState, useEffect, useCallback } from 'react';
 import color from '../util/color'
 import { CalculatorContext, plateCountType } from '../context/calculator-context';
 import { SettingsContext, WeightUnit } from '../context/settings-context';
@@ -12,7 +12,7 @@ const Calculator: React.FC = () => {
   let totalRef: any;
 
   // Calculates total equipment weight from collar and barbell
-  const calculateTotalEquipmentWeight = (): number => {
+  const calculateTotalEquipmentWeight = useCallback((): number => {
     const { barbell, collar } = settingsState.equipment;
     let barbellWeight: number = 0;
     let collarWeight: number = 0;
@@ -23,11 +23,12 @@ const Calculator: React.FC = () => {
       barbellWeight = barbell.lb;
       collarWeight = collar.lb;
     }
-    return barbellWeight + collarWeight;
-  }
+    // Multiply collar weight by 2 since there are 2 collars (one on each side)
+    return barbellWeight + (collarWeight * 2);
+  }, [settingsState.equipment, currentWeightUnit])
 
   // Greedy algorithm for calculating plate pair counts from heaviest to lightest
-  const countPlatesFromTotal = (plateWeights: string[], total: number): plateCountType => {
+  const countPlatesFromTotal = useCallback((plateWeights: string[], total: number): plateCountType => {
     let plateCounts: plateCountType = {};
     const unit = currentWeightUnit === WeightUnit.KG ? 'kg' : 'lb';
     let remainingWeight = total - calculateTotalEquipmentWeight();
@@ -38,7 +39,7 @@ const Calculator: React.FC = () => {
     for (let plateIndex = 0; plateIndex < plates.length; plateIndex += 1) {
       const currentPlateWeight = parseFloat(plates[plateIndex]);
       let currentPlatePairCount = Math.floor(remainingWeight / (currentPlateWeight * 2));
-      // Barbell can only be loaded with even numbers of plates and 
+      // Barbell can only be loaded with even numbers of plates and
       // plates can not exceed total plates available
       if (currentPlatePairCount > settingsState.plates[unit][currentPlateWeight]) {
         currentPlatePairCount = settingsState.plates[unit][currentPlateWeight];
@@ -47,7 +48,7 @@ const Calculator: React.FC = () => {
       plateCounts[currentPlateWeight] = currentPlatePairCount.toString();
     }
     return plateCounts;
-  }
+  }, [currentWeightUnit, calculateTotalEquipmentWeight, settingsState.plates])
 
   // Ensures string is a valid decimal
   const sanitizeDecimal = (input: string): string => input.replace(/[^0-9.]/g, '');
@@ -98,7 +99,7 @@ const Calculator: React.FC = () => {
     setTotalDisplay(total === 0 ? '' : total.toString());
     setPlateDisplay(updatedPlateCount);
     setCalculatorState({ total: total, plateCounts: updatedPlateCount });
-  }, [settingsState]);
+  }, [calculatorState.total, countPlatesFromTotal, currentWeightUnit, kgInputColors, lbInputColors, setCalculatorState, settingsState]);
 
   // Triggered when convertedTotal changes
   useEffect(() => {
@@ -118,7 +119,7 @@ const Calculator: React.FC = () => {
     setTotalDisplay(convertedTotal === 0 ? '' : convertedTotal.toString());
     setPlateDisplay(updatedPlateCount);
     setCalculatorState({ total: convertedTotal, plateCounts: updatedPlateCount });
-  }, [convertedTotal, currentWeightUnit])
+  }, [convertedTotal, countPlatesFromTotal, currentWeightUnit, kgInputColors, lbInputColors, setCalculatorState, settingsState.plates.kg, settingsState.plates.lb])
 
   // Sets warnings
   useEffect(() => {
@@ -145,7 +146,7 @@ const Calculator: React.FC = () => {
     } else {
       (totalRef as HTMLElement).style.background = 'none';
     }
-  }, [plateDisplay, settingsState.plates, currentWeightUnit]);
+  }, [plateDisplay, settingsState.plates, currentWeightUnit, calculateTotalEquipmentWeight, totalDisplay, plateInputRefs, totalRef]);
 
   // handles plate count inputs
   const handlePlateInput = (event: ChangeEvent<HTMLInputElement>) => {
@@ -174,9 +175,8 @@ const Calculator: React.FC = () => {
       Object.keys(updatedPlateCounts).map(weight =>
         newTotal += parseFloat(weight) * parseInt(updatedPlateCounts[weight]) * 2
       );
-      if (newTotal !== 0) {
-        newTotal += calculateTotalEquipmentWeight();
-      }
+      // Always include equipment weight (barbell + collars)
+      newTotal += calculateTotalEquipmentWeight();
       newTotal = Math.round(newTotal * 100) / 100;
 
       // Updates local and context states

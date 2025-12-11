@@ -1,0 +1,453 @@
+// @import url("https://fonts.googleapis.com/css?family=Noto+Sans&display=swap");
+
+//// variables ////
+
+$background-color: #dadada;
+$nav-color: #424242;
+$min-width: 315px;
+
+//// mixins ////
+
+@mixin input-styling {
+  padding: 0;
+  margin: 0;
+  outline: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  &::placeholder {
+    opacity: 1;
+    transition: opacity 0.25s;
+  }
+  &:focus::placeholder {
+    opacity: 0;
+  }
+  &:active::placeholder {
+    opacity: 0;
+  }
+}
+
+@mixin flex($align: center, $justify: center, $direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+//// styles ////
+
+button {
+  cursor: pointer;
+  letter-spacing: 0.05em;
+}
+
+html,
+body {
+  font-family: "Noto Sans", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: $background-color;
+  font-size: 16px;
+  min-width: $min-width;
+  letter-spacing: 0.1em;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+h3 {
+  font-size: 0.9em;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.grid {
+  background: $background-color;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: $min-width;
+  margin-top: 2.75em;
+  min-height: 105vh;
+  z-index: 2;
+  display: grid;
+  align-items: center;
+  justify-content: flex-end;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "weight"
+    "canvas"
+    "footer";
+  transition: 0.5s;
+}
+
+.nav {
+  @include flex(center, space-between);
+  background: $nav-color;
+  height: 2.75em;
+  width: 100%;
+  min-width: $min-width;
+  padding: 0;
+  margin: 0;
+  color: $background-color;
+  .nav-unit-radio,
+  label,
+  button {
+    cursor: pointer;
+    font-size: 1.25em;
+    border: none;
+    outline: none;
+    transition: 0.5s ease-out;
+    &:hover {
+      transition: 0.1s ease-in;
+      color: white;
+    }
+  }
+  button {
+    padding: 0 10px;
+    background: none;
+    border: none;
+    color: $background-color;
+  }
+  label {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 5px;
+    padding-bottom: 1px;
+    color: darkgrey;
+    &:hover {
+      transition: 0.1s ease-in;
+      color: white;
+    }
+  }
+  .nav-unit-radio {
+    display: none;
+  }
+  :focus {
+    transition: none;
+    color: white;
+  }
+}
+
+.weights-container {
+  display: grid;
+  grid-area: weight;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1.5fr;
+  grid-auto-rows: minmax(75px, 1fr);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 90vw;
+  min-width: 0;
+  justify-self: center;
+  font-size: 5vw; // 'magic' number
+}
+
+.total-container {
+  grid-column: 1/3 span;
+  @include flex(initial, flex-end, column);
+  height: 100%;
+  color: $nav-color;
+  letter-spacing: 0.1em;
+  .total-input-card {
+    @include flex;
+    text-align: right;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    .total-input {
+      @include input-styling;
+      width: 100%;
+      margin-left: 60px;
+      font-size: 3.5em;
+      text-align: center;
+      border-bottom: 0.5px solid #777;
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+      transition: background 0.5s ease-in-out 0.1s;
+    }
+    .total-unit {
+      position: relative;
+      right: 0;
+      font-size: 2.25em;
+      min-width: 60px;
+      text-align: left;
+    }
+  }
+}
+
+.plate-pairs-heading {
+  padding-bottom: 8px;
+  font-size: 1.2em;
+}
+
+.input-card {
+  @include flex(center, center, column);
+  .input {
+    @include input-styling;
+    width: 2em;
+    text-align: center;
+    font-size: 2em;
+    border-radius: 2px;
+    transition: background 0.5s ease-in-out 0.1s;
+  }
+  .input-unit {
+    font-size: 0.9em;
+  }
+}
+
+.barbell-canvas-container {
+  grid-area: canvas;
+  text-align: right;
+  padding-top: 35px;
+  padding-bottom: 50px;
+  .barbell-canvas {
+    padding: 0;
+    margin: 0;
+    grid-column: 1/2;
+    grid-row: 2;
+  }
+}
+
+.settings-panel {
+  position: relative;
+  width: 100%;
+  min-width: $min-width;
+  height: 100%;
+  padding: 10px 0;
+  z-index: 0;
+  background: grey;
+  color: #111111;
+  overflow-y: scroll;
+  font-size: 4.3vw; // 'magic' scaling number
+  form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0 3px;
+  }
+  h4 {
+    padding: 0;
+    font-size: 1.1em;
+    font-weight: normal;
+    border-bottom: 1px solid $nav-color;
+    width: auto;
+  }
+  :focus {
+    outline-color: black;
+  }
+  :target {
+    outline-color: black;
+  }
+}
+
+.equipment-group {
+  white-space: nowrap;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content;
+  align-items: center;
+  justify-content: flex-start;
+  grid-gap: 5px;
+  min-width: 100%;
+  max-height: min-content;
+  input {
+    text-align: center;
+    background: $background-color;
+    border: none;
+    border-radius: 1px;
+    &::placeholder {
+      color: black;
+      opacity: 1;
+      transition: opacity 0.25s;
+    }
+    &:focus::placeholder {
+      opacity: 0;
+    }
+    &:active::placeholder {
+      opacity: 0;
+    }
+  }
+  h4 {
+    grid-column: 1/2 span;
+    font-size: 1.1em;
+    margin: 0;
+    margin-bottom: 3px;
+    max-width: 80%;
+    justify-self: center;
+  }
+  .equipment-weight-container {
+    @include flex;
+  }
+  .equipment-card {
+    @include flex;
+    padding: 0 5px;
+    input {
+      width: 2.75em;
+      font-size: 0.8em;
+    }
+  }
+  .equipment-unit {
+    padding-left: 4px;
+    font-size: 0.9em;
+  }
+}
+
+.plate-group {
+  white-space: nowrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: auto;
+  grid-gap: 3px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-size: 1em;
+  cursor: pointer;
+  select {
+    background: $background-color;
+    font-size: 0.8em;
+  }
+  h4 {
+    font-size: 1.1em;
+    grid-column: 1/3 span;
+    text-align: center;
+    margin: 0;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    max-width: 80%;
+    justify-self: center;
+    padding: 0px 10px;
+  }
+}
+
+.plate-card {
+  @include flex(center, center, column);
+  .plate-input-container {
+    @include flex;
+  }
+}
+
+.submit-group {
+  @include flex(center, space-evenly);
+  padding: 10px 0;
+  width: 100%;
+  button {
+    font-size: 0.9em;
+    border: solid $background-color 2px;
+    border-radius: 1px;
+    transition: 0.1s ease-in-out;
+    background: $background-color;
+    &:hover {
+      transition: none;
+      text-decoration: underline $nav-color;
+    }
+    &:active {
+      transition: none;
+      color: $background-color;
+      text-decoration: underline $background-color;
+      background: $nav-color;
+      border-color: $nav-color;
+    }
+  }
+}
+
+.footer-container {
+  @include flex(center, space-around, column);
+  grid-area: footer;
+  background: $nav-color;
+  min-height: 3em;
+  align-self: flex-end;
+  color: $background-color;
+  padding: 5px 0;
+  h5 {
+    padding: 0;
+    margin: 0;
+    letter-spacing: 0.12em;
+  }
+  a {
+    text-decoration: none;
+    color: $background-color;
+    transition: 0.2s ease;
+    &:hover {
+      color: white;
+    }
+    &:active:after {
+      color: white;
+    }
+  }
+  .footer-icon-container {
+    @include flex;
+    padding: 0 7px;
+  }
+  .footer-icon-fork {
+    height: 15px;
+    padding: 0 5px;
+    filter: invert(97%) sepia(0%) saturate(21%) hue-rotate(145deg) brightness(93%) contrast(89%);
+  }
+  .footer-icon-star {
+    height: 18px;
+    padding: 0 5px;
+    filter: invert(97%) sepia(0%) saturate(21%) hue-rotate(145deg) brightness(93%) contrast(89%);
+  }
+  .footer-repo-container {
+    @include flex;
+  }
+}
+
+// For wide screens such as desktops and devices in landscape mode
+@media only screen and (min-width: 800px) and (min-aspect-ratio: 1/1) {
+  // split main content
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "weight canvas"
+      "footer footer";
+    align-items: flex-start;
+  }
+  .weights-container {
+    font-size: 2.3vw; // 'magic' scaling number
+    max-width: initial;
+    padding-left: 5vw;
+    padding-right: 2vw;
+    padding-bottom: 50px;
+  }
+  // rearrages settings into one row
+  .settings-panel {
+    font-size: 2vw; // 'magic' scaling number
+    form {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: 1fr;
+      max-width: 80vw;
+      margin: auto;
+    }
+  }
+  .plate-group {
+    justify-self: flex-start;
+    h4 {
+      margin: 0;
+    }
+    select {
+      margin-top: 12px;
+    }
+  }
+  .barbell-canvas-container {
+    padding-top: 5.5vw;
+  }
+}
+
+// For unusually tall screens
+@media only screen and (max-aspect-ratio: 320/825) {
+  .grid {
+    grid-template-rows: min-content auto auto;
+    align-items: flex-start;
+  }
+}

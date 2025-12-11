@@ -134,7 +134,7 @@ const SettingsPanel: React.FC<any> = () => {
           </div>
         </div>
         <div className='equipment-group'>
-          <h4>Collar Weight</h4>
+          <h4>1 Collar Weight</h4>
           <div className='equipment-weight-container'>
             <EquipmentSettingCard
               unit='kg'
