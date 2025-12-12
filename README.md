@@ -8,6 +8,57 @@ Visual Barbell is a modern web application for visualizing and calculating barbe
 * **Dimensions:** Dimensions and colors are based on real equipment.
 * **Persistent Settings:** Equipment settings instantly save and persist between sessions.
 
+## Installation 📦
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v14 or higher)
+- npm (comes with Node.js) or [yarn](https://yarnpkg.com/)
+
+### Setup Instructions
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/AnthonyMickaelAlexis/visual-barbell-calculator.git
+   cd visual-barbell-calculator
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm start
+   # or
+   yarn start
+   ```
+   The application will open in your browser at [http://localhost:3000](http://localhost:3000)
+
+4. **Build for production**
+   ```bash
+   npm run build
+   # or
+   yarn build
+   ```
+   This creates an optimized production build in the `build` folder.
+
+5. **Deploy to GitHub Pages** (optional)
+   ```bash
+   npm run deploy
+   # or
+   yarn deploy
+   ```
+
+### Available Scripts
+
+- `npm start` - Runs the app in development mode
+- `npm test` - Launches the test runner
+- `npm run build` - Builds the app for production
+- `npm run deploy` - Deploys the app to GitHub Pages
+
 ## Tips 💪
 **Plates are calculated in pairs**
 
@@ -41,6 +92,57 @@ Visual Barbell est une application web moderne pour visualiser et calculer les p
 * **Unités :** Choisissez entre lb et kg, et convertissez entre eux.
 * **Dimensions :** Les dimensions et les couleurs sont basées sur du véritable équipement.
 * **Paramètres persistants :** Les paramètres de l'équipement se sauvegardent instantanément et persistent entre les sessions.
+
+## Installation 📦
+
+### Prérequis
+- [Node.js](https://nodejs.org/) (v14 ou supérieur)
+- npm (inclus avec Node.js) ou [yarn](https://yarnpkg.com/)
+
+### Instructions d'installation
+
+1. **Cloner le dépôt**
+   ```bash
+   git clone https://github.com/AnthonyMickaelAlexis/visual-barbell-calculator.git
+   cd visual-barbell-calculator
+   ```
+
+2. **Installer les dépendances**
+   ```bash
+   npm install
+   # ou
+   yarn install
+   ```
+
+3. **Démarrer le serveur de développement**
+   ```bash
+   npm start
+   # ou
+   yarn start
+   ```
+   L'application s'ouvrira dans votre navigateur à l'adresse [http://localhost:3000](http://localhost:3000)
+
+4. **Compiler pour la production**
+   ```bash
+   npm run build
+   # ou
+   yarn build
+   ```
+   Cela crée une version de production optimisée dans le dossier `build`.
+
+5. **Déployer sur GitHub Pages** (optionnel)
+   ```bash
+   npm run deploy
+   # ou
+   yarn deploy
+   ```
+
+### Scripts disponibles
+
+- `npm start` - Lance l'application en mode développement
+- `npm test` - Lance les tests
+- `npm run build` - Compile l'application pour la production
+- `npm run deploy` - Déploie l'application sur GitHub Pages
 
 ## Conseils 💪
 **Les disques sont calculés par paires**
