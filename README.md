@@ -26,6 +26,9 @@ Visual Barbell is a modern web application for visualizing and calculating barbe
 ## Screenshots 🤳
 <img src="https://i.imgur.com/UhwyZSt.png" height="350"> <img src="https://i.imgur.com/JFOxGiv.png" width="500">
 
+## Contributors
+- **Original Author**: Justin Beringer (2019)
+- **Enhanced by**: Anthony Mickael Alexis (2025) - French translation, plate weight calculation fix, weight proximity suggestions, UI improvements, and default configuration updates
 
 ___________________________________________________________________________________________________
 

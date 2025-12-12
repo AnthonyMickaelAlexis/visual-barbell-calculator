@@ -1,6 +1,10 @@
 {
   "name": "visual_barbell",
   "author": "Justin Beringer <jbberinger@gmail.com> (https://JustinBeringer.com)",
+  "contributors": [
+    "Justin Beringer <jbberinger@gmail.com> (https://JustinBeringer.com)",
+    "Anthony Mickael Alexis <anthony.mickael.alexis@gmail.com> (https://github.com/AnthonyMickaelAlexis)"
+  ],
   "description": "Visual Barbell is a modern web application for visualizing and calculating barbell weights.",
   "version": "0.1.0",
   "license": "MIT",
